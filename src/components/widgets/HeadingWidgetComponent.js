@@ -5,62 +5,107 @@ export default class HeadingWidgetComponent extends React.Component {
         newWidgetText: this.props.widget.text,
         previewMode: false,
         newWidgetName: this.props.widget.name,
-        heading: `h${this.props.size}`,
-        editWidget: this.props.widget
+        editWidget: this.props.widget,
+        heading: `h${this.props.widget.size}`
     }
 
-    /*
-    componentDidMount() {
-        this.props.findWidget(this.props.topicId)
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.topicId !== this.props.topicId) {
-            this.props.findWidget(this.props.topicId)
-        }
-    }
-*/
     render() {
         return (
             <div>
                 {
                     !this.state.previewMode &&
                     <span>
-                        <h3>Heading Widget</h3>
-                        <button className="btn btn-sm btn-dark float-right"
+                        <h5>Heading Widget</h5>
+                        <button className="btn btn-sm mb-2 ml-2 btn-dark float-right"
                             onClick={() => this.props.deleteWidget(this.props.widget.id)}>
                             <i className="fa fa-times"></i>
                         </button>
-                        <select ref={node => this.select = node}
-                                value={this.props.widget.type}
-                                onChange={e => {
-                                    this.props.changeType(this.props.widget.id, this.select.value)
-                                }}>
+                        <select
+                            className="float-right mt-1 ml-2"
+                            ref={node => this.input = node}
+                            defaultValue={this.state.editWidget.type}
+                            onChange={(e) => {
+                                this.props.changeType(this.props.widget.id, this.input.value)
+                            }}>
                             <option value="HEADING">Heading</option>
                             <option value="PARAGRAPH">Paragraph</option>
                         </select>
-                        <button className="btn btn-sm btn-dark float-right"
-                            onClick={() => this.props.positionDown(this.props.widget.id)}>
-                            <i className="fa fa-arrow-down"></i>
-                        </button>
-                        <button className="btn btn-sm btn-dark float-right"
-                            onClick={() => this.props.positionUp(this.props.widget.id)}>
-                            <i className="fa fa-arrow-up"></i>
-                        </button>
+                        {
+                            this.state.editWidget.widgetOrder < this.props.size
+                            && this.props.widget.widgetOrder < this.props.size &&
+                            <button className="btn btn-sm btn-dark ml-2 float-right"
+                                onClick={() => {
+                                    this.props.widgets.map(widget => {
+                                        if (widget.id === this.props.widget.id) {
+                                            this.setState(prevState => ({
+                                                editWidget: {
+                                                    ...prevState.editWidget,
+                                                    widgetOrder: prevState.editWidget.widgetOrder + 1
+                                                }
+                                            })
+                                            )
+                                        }
+                                        if (widget.widgetOrder === this.props.widget.widgetOrder + 1) {
+                                            widget.widgetOrder = this.props.widget.widgetOrder
+                                        }
+                                    })
+                                    this.props.positionDown(this.props.widget.id, this.state.editWidget)
+                                }}>
+                                <i className="fa fa-arrow-down"></i>
+                            </button>
+                        }
+                        {
+                            this.state.editWidget.widgetOrder > 1
+                            && this.props.widget.widgetOrder > 1 &&
+                            <button className="btn btn-sm btn-dark float-right"
+                                onClick={() => {
+                                    this.props.widgets.map(widget => {
+                                        if (widget.id === this.props.widget.id) {
+                                            this.setState(prevState => ({
+                                                editWidget: {
+                                                    ...prevState.editWidget,
+                                                    widgetOrder: prevState.editWidget.widgetOrder - 1
+                                                }
+                                            })
+                                            )
+                                        }
+                                        if (widget.widgetOrder === this.props.widget.widgetOrder - 1) {
+                                            widget.widgetOrder = this.props.widget.widgetOrder
+                                        }
+                                    })
+                                    this.props.positionUp(this.props.widget.id, this.state.editWidget)
+                                }}>
+                                <i className="fa fa-arrow-up"></i>
+                            </button>
+                        }
                         <input
                             className="form-control"
                             placeholder="Heading text"
                             onChange={(e) => {
                                 const newText = e.target.value
-                                this.setState({
-                                    newWidgetText: newText
-                                })
+                                this.setState(prevState => ({
+                                    editWidget: {
+                                        ...prevState.editWidget,
+                                        text: newText
+                                    }
+                                }))
                             }}
-                            value={this.props.widget.text} />
-                        <select ref={node => this.select = node}
-                            value={this.props.widget.type}
-                            onChange={e => {
-                                this.props.changeHeading(this.props.widget.id, this.select.value)
+                            value={this.state.editWidget.text} />
+                        <select
+                            ref={node => this.select = node}
+                            defaultValue={'' + this.state.editWidget.size}
+                            onChange={(e) => {
+                                this.setState(prevState => ({
+                                    editWidget: {
+                                        ...prevState.editWidget,
+                                        size: parseInt(this.select.value)
+                                    }
+                                }))
+                                {
+                                    this.setState(prevState => ({
+                                        heading: `h${this.select.value}`
+                                    }))
+                                }
                             }}
                             className="form-control">
                             <option value="1">Heading 1</option>
@@ -75,16 +120,20 @@ export default class HeadingWidgetComponent extends React.Component {
                             placeholder="Widget name"
                             onChange={(e) => {
                                 const newName = e.target.value
-                                this.setState({
-                                    newWidgetName: newName
-                                })
+                                this.setState(prevState => ({
+                                    editWidget: {
+                                        ...prevState.editWidget,
+                                        name: newName
+                                    }
+                                }))
                             }}
-                            value={this.props.widget.name} />
+                            value={this.state.editWidget.name} />
+                        <h6 className="mt-2">Preview</h6>
                     </span>
                 }
-                <h1>
-                    {this.props.widget.text}
-                </h1>
+                <this.state.heading>
+                    {this.state.editWidget.text}
+                </this.state.heading>
 
                 <button className="btn btn-primary float-right btn-sm"
                     onClick={() => {
@@ -111,7 +160,7 @@ export default class HeadingWidgetComponent extends React.Component {
                     }}>
                     Save
                 </button>
-            </div>
+            </div >
         )
     }
 }

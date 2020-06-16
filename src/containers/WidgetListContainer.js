@@ -67,14 +67,6 @@ const dispatchToPropertyMapper = (dispatch) => {
                     widget: actualWidget,
                     newType: newType
                 }))
-        },
-        changeHeading: (widgetId, newHeading) => {
-            WidgetService.findWidgetById(widgetId)
-                .then(actualWidget => dispatch({
-                    type: "CHANGE_HEADING",
-                    widget: actualWidget,
-                    newHeading: newHeading
-                }))
         }
     }
 }

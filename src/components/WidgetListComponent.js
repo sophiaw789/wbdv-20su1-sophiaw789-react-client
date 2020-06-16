@@ -1,6 +1,7 @@
 import React from "react";
 import HeadingWidgetComponent from "./widgets/HeadingWidgetComponent";
 import ParagraphWidgetComponent from "./widgets/ParagraphWidgetComponent";
+import "../styles/HeadingWidgetStyle.css";
 
 class WidgetListComponent extends React.Component {
 
@@ -22,43 +23,66 @@ class WidgetListComponent extends React.Component {
                 <h4>Widget List</h4>
                 <ul className="list-group">
                     {
-                        this.props.widgets.map(widget =>
-                            <li key={widget.id}
-                                className={`list-group-item nowrap`}>
-                                {
-                                    widget.type === 'HEADING' &&
-                                    <HeadingWidgetComponent
-                                        widget={widget}
-                                        topicId={this.props.params.topicId}
-                                        findWidgetById={this.props.findWidgetById}
-                                        updateWidget={this.props.updateWidget}
-                                        deleteWidget={this.props.deleteWidget}
-                                        positionUp={this.props.positionUp}
-                                        positionDown={this.props.positionDown}
-                                        changeType={this.props.changeType} 
-                                        changeHeading={this.props.changeHeading}/>
-                                }
-                                {
-                                    widget.type === 'PARAGRAPH' &&
-                                    <ParagraphWidgetComponent widget={widget}
-                                        deleteWidget={this.props.deleteWidget}
-                                        positionUp={this.props.positionUp}
-                                        positionDown={this.props.positionDown}
-                                        changeType={this.props.deleteWidget} />
-                                }
-                            </li>
-                        )}
+                        this.props.widgets.sort((a, b) => a.widgetOrder > b.widgetOrder ? 1 : -1)
+                            .map(widget =>
+                                <li key={widget.id}
+                                    className={`list-group-item nowrap`}>
+                                    {
+                                        widget.type === 'HEADING' &&
+                                        <HeadingWidgetComponent
+                                            widget={widget}
+                                            widgets={this.props.widgets}
+                                            topicId={this.props.params.topicId}
+                                            findWidgetById={this.props.findWidgetById}
+                                            updateWidget={this.props.updateWidget}
+                                            deleteWidget={this.props.deleteWidget}
+                                            positionUp={this.props.positionUp}
+                                            positionDown={this.props.positionDown}
+                                            size={this.props.widgets.length}
+                                            changeType={this.props.changeType} />
+                                    }
+                                    {
+                                        widget.type === 'PARAGRAPH' &&
+                                        <ParagraphWidgetComponent
+                                            widget={widget}
+                                            widgets={this.props.widgets}
+                                            topicId={this.props.params.topicId}
+                                            findWidgetById={this.props.findWidgetById}
+                                            updateWidget={this.props.updateWidget}
+                                            deleteWidget={this.props.deleteWidget}
+                                            positionUp={this.props.positionUp}
+                                            positionDown={this.props.positionDown}
+                                            size={this.props.widgets.length}
+                                            changeType={this.props.changeType} />
+                                    }
+                                </li>
+                            )}
                 </ul>
-
-                <button className="btn btn-dark"
-                    onClick={() => this.props.createWidget(
-                        this.props.params.topicId,
-                        {
-                            name: '',
-                            type: 'HEADING',
-                            text: '',
-                            size: 1
-                        })}>
+                <button className="btn btn-dark float-right"
+                    onClick={() => {
+                        if (this.props.widgets === []) {
+                            this.props.createWidget(
+                                this.props.params.topicId,
+                                {
+                                    name: '',
+                                    type: 'HEADING',
+                                    text: 'Heading text',
+                                    size: 1,
+                                    widgetOrder: 1
+                                })
+                        }
+                        else {
+                            this.props.createWidget(
+                                this.props.params.topicId,
+                                {
+                                    name: '',
+                                    type: 'HEADING',
+                                    text: 'Heading text',
+                                    size: 1,
+                                    widgetOrder: this.props.widgets.length + 1
+                                })
+                        }
+                    }}>
                     <i className="fa fa-plus"></i>
                 </button>
 
