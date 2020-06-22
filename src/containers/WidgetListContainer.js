@@ -25,6 +25,15 @@ const dispatchToPropertyMapper = (dispatch) => {
                     widget: actualWidget
                 }))
         },
+        /*
+            updateWidget: (wid, widget) => {
+                dispatcher({
+                    type: "UPDATE_WIDGET",
+                    wid: wid,
+                    widget: widget
+                })
+            },
+         */
         updateWidget: (widgetId, newWidget) => {
             WidgetService.updateWidget(widgetId, newWidget)
                 .then(status => dispatch({

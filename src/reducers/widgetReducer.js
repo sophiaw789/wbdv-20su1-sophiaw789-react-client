@@ -10,6 +10,13 @@ const myData = [].concat(this.state.data)
 */
 const widgetReducer = (state = initialState, event) => {
     switch (event.type) {
+        /*
+            case "UPDATE_WIDGET":
+                return {
+                    ...state,
+                    widgets: state.widgets.map(widget => widget.id === action.wid ? action.widget : widget)
+                }
+         */
         case "UPDATE_WIDGET":
             return {
                 ...state,

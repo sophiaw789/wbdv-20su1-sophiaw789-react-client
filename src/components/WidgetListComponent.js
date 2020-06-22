@@ -1,6 +1,7 @@
 import React from "react";
 import HeadingWidgetComponent from "./widgets/HeadingWidgetComponent";
 import ParagraphWidgetComponent from "./widgets/ParagraphWidgetComponent";
+import YouTubeWidgetComponent from "./widgets/YouTubeWidgetComponent";
 import "../styles/HeadingWidgetStyle.css";
 
 class WidgetListComponent extends React.Component {
@@ -15,6 +16,20 @@ class WidgetListComponent extends React.Component {
         if (prevProps.params.topicId !== this.props.params.topicId) {
             this.props.findWidgetsForTopic(this.props.params.topicId)
         }
+    }
+
+    updateWidget = (e, oldWidget) => {
+        oldWidget.type = e.target.value;
+        // this fetch really should be implemented in a service and then called from the dispatch / property mapper
+        fetch(`https://wbdv-20su1-sophiaw789-server.herokuapp.com/api/widgets/${oldWidget.id}`, {
+            method: 'PUT',
+            body: JSON.stringify(oldWidget),
+            headers: {
+                'content-type': 'application/json'
+            },
+            // credentials: "include"
+        }).then(response => response.json())
+            .then(newWidget => this.props.updateWidget(oldWidget.id, newWidget))
     }
 
     render() {
@@ -55,6 +70,29 @@ class WidgetListComponent extends React.Component {
                                             size={this.props.widgets.length}
                                             changeType={this.props.changeType} />
                                     }
+                                    {
+                                        widget.type === 'YOUTUBE' &&
+                                        <YouTubeWidgetComponent
+                                            widget={widget}
+                                            widgets={this.props.widgets}
+                                            topicId={this.props.params.topicId}
+                                            findWidgetById={this.props.findWidgetById}
+                                            updateWidget={this.props.updateWidget}
+                                            deleteWidget={this.props.deleteWidget}
+                                            positionUp={this.props.positionUp}
+                                            positionDown={this.props.positionDown}
+                                            size={this.props.widgets.length}
+                                            changeType={this.props.changeType} />
+                                    }
+                                    {/*
+                                    <div>
+                                        <select onChange={(e) => this.updateWidget(e, widget)} value={widget.type}>
+                                            <option value="HEADING">HEADING</option>
+                                            <option value="YOUTUBE">YOUTUBE</option>
+                                            <option value="PARAGRAPH">PARAGRAPH</option>
+                                        </select>
+                                    </div>
+                                    */}
                                 </li>
                             )}
                 </ul>
