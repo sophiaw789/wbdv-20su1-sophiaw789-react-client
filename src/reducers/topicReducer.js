@@ -9,7 +9,7 @@ const topicReducer = (state = initialState, event) => {
             return {
                 ...state,
                 topics: state.topics.map(
-                    topic => topic._id === event.updatedTopic._id ?
+                    topic => topic.id === event.updatedTopic.id ?
                         event.updatedTopic : topic
                 )
             }
@@ -32,7 +32,7 @@ const topicReducer = (state = initialState, event) => {
             }
         case "DELETE_TOPIC":
             return {
-                topics: state.topics.filter(topic => topic._id !== event.topicId)
+                topics: state.topics.filter(topic => topic.id !== event.topicId)
             }
         default:
             return state;

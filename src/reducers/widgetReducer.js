@@ -1,5 +1,6 @@
 const initialState = {
-    widgets: []
+    widgets: [],
+    previewMode: false
 }
 /*
 const myData = [].concat(this.state.data)

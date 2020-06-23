@@ -26,6 +26,8 @@ export default class ParagraphWidgetComponent extends React.Component {
                             onChange={(e) => { this.props.changeType(this.props.widget.id, this.input.value) }}>
                             <option value="HEADING">Heading</option>
                             <option value="PARAGRAPH">Paragraph</option>
+                            <option value="IMAGE">Image</option>
+                            <option value="LIST">List</option>
                         </select>
                         {
                             this.props.widget.widgetOrder !== this.props.size &&

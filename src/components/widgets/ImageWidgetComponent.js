@@ -1,12 +1,9 @@
 import React from "react";
 
-export default class HeadingWidgetComponent extends React.Component {
+export default class ImageWidgetComponent extends React.Component {
     state = {
-        newWidgetText: this.props.widget.text,
         previewMode: false,
-        newWidgetName: this.props.widget.name,
-        editWidget: this.props.widget,
-        heading: `h${this.props.widget.size}`
+        editWidget: this.props.widget
     }
 
     render() {
@@ -15,7 +12,7 @@ export default class HeadingWidgetComponent extends React.Component {
                 {
                     !this.state.previewMode &&
                     <span>
-                        <h5>Heading Widget</h5>
+                        <h5>Image Widget</h5>
                         <button className="btn btn-sm mb-2 ml-2 btn-dark float-right"
                             onClick={() => this.props.deleteWidget(this.props.widget.id)}>
                             <i className="fa fa-times"></i>
@@ -24,17 +21,14 @@ export default class HeadingWidgetComponent extends React.Component {
                             className="float-right mt-1 ml-2"
                             ref={node => this.input = node}
                             defaultValue={this.state.editWidget.type}
-                            onChange={(e) => {
-                                this.props.changeType(this.props.widget.id, this.input.value)
-                            }}>
+                            onChange={(e) => { this.props.changeType(this.props.widget.id, this.input.value) }}>
                             <option value="HEADING">Heading</option>
                             <option value="PARAGRAPH">Paragraph</option>
                             <option value="IMAGE">Image</option>
                             <option value="LIST">List</option>
                         </select>
                         {
-                            this.state.editWidget.widgetOrder < this.props.size
-                            && this.props.widget.widgetOrder < this.props.size &&
+                            this.props.widget.widgetOrder !== this.props.size &&
                             <button className="btn btn-sm btn-dark ml-2 float-right"
                                 onClick={() => {
                                     this.props.widgets.map(widget => {
@@ -51,14 +45,13 @@ export default class HeadingWidgetComponent extends React.Component {
                                             widget.widgetOrder = this.props.widget.widgetOrder
                                         }
                                     })
-                                    this.props.positionDown(this.props.widget.id, this.state.editWidget)
+                                    this.props.positionDown(this.props.widget.id)
                                 }}>
                                 <i className="fa fa-arrow-down"></i>
                             </button>
                         }
                         {
-                            this.state.editWidget.widgetOrder > 1
-                            && this.props.widget.widgetOrder > 1 &&
+                            this.props.widget.widgetOrder !== 1 &&
                             <button className="btn btn-sm btn-dark float-right"
                                 onClick={() => {
                                     this.props.widgets.map(widget => {
@@ -75,48 +68,24 @@ export default class HeadingWidgetComponent extends React.Component {
                                             widget.widgetOrder = this.props.widget.widgetOrder
                                         }
                                     })
-                                    this.props.positionUp(this.props.widget.id, this.state.editWidget)
+                                    this.props.positionUp(this.props.widget.id)
                                 }}>
                                 <i className="fa fa-arrow-up"></i>
                             </button>
                         }
                         <input
                             className="form-control"
-                            placeholder="Heading text"
+                            placeholder="Image URL"
                             onChange={(e) => {
                                 const newText = e.target.value
                                 this.setState(prevState => ({
                                     editWidget: {
                                         ...prevState.editWidget,
-                                        text: newText
+                                        url: newText
                                     }
                                 }))
                             }}
-                            value={this.state.editWidget.text} />
-                        <select
-                            ref={node => this.select = node}
-                            defaultValue={'' + this.state.editWidget.size}
-                            onChange={(e) => {
-                                this.setState(prevState => ({
-                                    editWidget: {
-                                        ...prevState.editWidget,
-                                        size: parseInt(this.select.value)
-                                    }
-                                }))
-                                {
-                                    this.setState(prevState => ({
-                                        heading: `h${this.select.value}`
-                                    }))
-                                }
-                            }}
-                            className="form-control">
-                            <option value="1">Heading 1</option>
-                            <option value="2">Heading 2</option>
-                            <option value="3">Heading 3</option>
-                            <option value="4">Heading 4</option>
-                            <option value="5">Heading 5</option>
-                            <option value="6">Heading 6</option>
-                        </select>
+                            value={this.state.editWidget.url} />
                         <input
                             className="form-control"
                             placeholder="Widget name"
@@ -133,10 +102,9 @@ export default class HeadingWidgetComponent extends React.Component {
                         <h6 className="mt-2">Preview</h6>
                     </span>
                 }
-                <this.state.heading>
-                    {this.state.editWidget.text}
-                </this.state.heading>
-
+                <div>
+                    <img src={this.state.editWidget.url} />
+                </div>
                 <button className="btn btn-primary float-right btn-sm"
                     onClick={() => {
                         if (this.state.previewMode) {
@@ -162,7 +130,7 @@ export default class HeadingWidgetComponent extends React.Component {
                     }}>
                     Save
                 </button>
-            </div >
+            </div>
         )
     }
 }

@@ -33,8 +33,8 @@ class CourseEditorComponent extends React.Component {
                 <div className="row mt-2">
                     <div className="col-4">
                         <ModuleListContainer 
-                        match={match}
-                        history={history}
+                        //match={match}
+                        //history={history}
                         {...this.props.match} />
                         <LessonTabsContainer {...this.props.match} />
                     </div>

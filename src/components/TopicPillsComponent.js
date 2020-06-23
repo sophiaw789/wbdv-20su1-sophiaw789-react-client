@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 class TopicPillsComponent extends React.Component {
     state = {
         newTopicTitle: 'New Topic',
+        newTopicDescription: 'New Description',
         editingTopic: {},
         selected: {}
     }
@@ -41,15 +42,16 @@ class TopicPillsComponent extends React.Component {
                 <ul className="list-group">
                     {
                         this.props.topics.map(topic =>
-                            <li key={topic._id}
+                            <li key={topic.id}
                                 className={`list-group-item nowrap
-                                            ${topic._id === this.state.editingTopic._id
-                                        || topic._id === this.state.selected._id ?
+                                            ${topic.id === this.state.editingTopic.id
+                                        || topic.id === this.state.selected.id ?
                                         "active" : ""}`}>
                                 {
-                                    this.state.editingTopic._id === topic._id &&
-                                    <span>
+                                    this.state.editingTopic.id === topic.id &&
+                                    <div className="input-group">
                                         <input
+                                            className="form-control"
                                             onChange={(e) => {
                                                 const newTitle = e.target.value
                                                 this.setState(prevState => ({
@@ -60,32 +62,49 @@ class TopicPillsComponent extends React.Component {
                                                 }))
                                             }}
                                             value={this.state.editingTopic.title} />
-                                        <button className="btn btn-sm btn-dark float-right"
-                                            onClick={() => this.props.deleteTopic(topic._id)}>
-                                            <i className="fa fa-times"></i>
-                                        </button>
-                                        <button className="btn btn-sm btn-dark mr-2 float-right"
-                                            onClick={() => {
-                                                this.props.updateTopic(this.state.editingTopic._id, this.state.editingTopic)
-                                                this.setState({ editingTopic: {} })
-                                            }}>
-                                            <i className="fa fa-check"></i>
-                                        </button>
-                                    </span>
+                                        <input
+                                            className="form-control"
+                                            onChange={(e) => {
+                                                const newDescription = e.target.value
+                                                this.setState(prevState => ({
+                                                    editingTopic: {
+                                                        ...prevState.editingTopic,
+                                                        description: newDescription
+                                                    }
+                                                }))
+                                            }}
+                                            value={this.state.editingTopic.description} />
+                                        <div className="input-group-append">
+                                            <button className="btn btn-sm btn-dark mr-2 float-right"
+                                                onClick={() => {
+                                                    this.props.updateTopic(this.state.editingTopic.id, this.state.editingTopic)
+                                                    this.setState({ editingTopic: {} })
+                                                }}>
+                                                <i className="fa fa-check"></i>
+                                            </button>
+                                            <button className="btn btn-sm btn-dark float-right"
+                                                onClick={() => this.props.deleteTopic(topic.id)}>
+                                                <i className="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 }
                                 {
-                                    this.state.editingTopic._id !== topic._id &&
-                                    <span>
-                                        <Link className="text-dark mt-1"
-                                            to={`/editor/${this.props.params.courseId}/modules/${this.props.params.moduleId}/lessons/${this.props.params.lessonId}/topics/${topic._id}`}
-                                            onClick={() => this.props.findTopic(topic._id)}>
-                                            {topic.title}
-                                        </Link>
-                                        <button className="btn btn-sm btn-dark float-right"
-                                            onClick={() => this.setState({ editingTopic: topic })}>
-                                            <i className="fa fa-pencil"></i>
-                                        </button>
-                                    </span>
+                                    this.state.editingTopic.id !== topic.id &&
+                                    <div>
+                                        <span>
+                                            <Link className="text-dark mt-1"
+                                                to={`/editor/${this.props.params.courseId}/modules/${this.props.params.moduleId}/lessons/${this.props.params.lessonId}/topics/${topic.id}`}
+                                                onClick={() => this.props.findTopic(topic.id)}>
+                                                {topic.title}
+                                            </Link>
+                                            <button className="btn btn-sm btn-dark float-right"
+                                                onClick={() => this.setState({ editingTopic: topic })}>
+                                                <i className="fa fa-pencil"></i>
+                                            </button>
+                                        </span>
+                                        <p className="d-none d-md-block text-dark">{topic.description}</p>
+                                    </div>
                                 }
                             </li>
                         )}
@@ -99,12 +118,20 @@ class TopicPillsComponent extends React.Component {
                             })}
                         className="form-control"
                         value={this.state.newTopicTitle} />
+                    <input
+                        onChange={(event) =>
+                            this.setState({
+                                newTopicDescription: event.target.value
+                            })}
+                        className="form-control"
+                        value={this.state.newTopicDescription} />
                     <div className="input-group-append">
                         <button className="btn btn-dark"
                             onClick={() => this.props.createTopic(
                                 this.props.params.lessonId,
                                 {
-                                    title: this.state.newTopicTitle
+                                    title: this.state.newTopicTitle,
+                                    description: this.state.newTopicDescription
                                 })}>
                             <i className="fa fa-plus"></i>
                         </button>

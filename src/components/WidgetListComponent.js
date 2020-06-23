@@ -1,8 +1,9 @@
 import React from "react";
 import HeadingWidgetComponent from "./widgets/HeadingWidgetComponent";
 import ParagraphWidgetComponent from "./widgets/ParagraphWidgetComponent";
-import YouTubeWidgetComponent from "./widgets/YouTubeWidgetComponent";
+import ImageWidgetComponent from "./widgets/ImageWidgetComponent";
 import "../styles/HeadingWidgetStyle.css";
+import ListWidgetComponent from "./widgets/ListWidgetComponent";
 
 class WidgetListComponent extends React.Component {
 
@@ -17,7 +18,7 @@ class WidgetListComponent extends React.Component {
             this.props.findWidgetsForTopic(this.props.params.topicId)
         }
     }
-
+/*
     updateWidget = (e, oldWidget) => {
         oldWidget.type = e.target.value;
         // this fetch really should be implemented in a service and then called from the dispatch / property mapper
@@ -30,6 +31,22 @@ class WidgetListComponent extends React.Component {
             // credentials: "include"
         }).then(response => response.json())
             .then(newWidget => this.props.updateWidget(oldWidget.id, newWidget))
+    }
+*/
+    createWidget = (order) => {
+        this.props.createWidget(
+            this.props.params.topicId,
+            {
+                name: '',
+                type: 'HEADING',
+                text: 'Heading text',
+                size: 1,
+                widgetOrder: order,
+                url: '',
+                width: 300,
+                height: 300,
+                ordering: 'ul'
+            })
     }
 
     render() {
@@ -71,8 +88,22 @@ class WidgetListComponent extends React.Component {
                                             changeType={this.props.changeType} />
                                     }
                                     {
-                                        widget.type === 'YOUTUBE' &&
-                                        <YouTubeWidgetComponent
+                                        widget.type === 'IMAGE' &&
+                                        <ImageWidgetComponent
+                                            widget={widget}
+                                            widgets={this.props.widgets}
+                                            topicId={this.props.params.topicId}
+                                            findWidgetById={this.props.findWidgetById}
+                                            updateWidget={this.props.updateWidget}
+                                            deleteWidget={this.props.deleteWidget}
+                                            positionUp={this.props.positionUp}
+                                            positionDown={this.props.positionDown}
+                                            size={this.props.widgets.length}
+                                            changeType={this.props.changeType} />
+                                    }
+                                                                        {
+                                        widget.type === 'LIST' &&
+                                        <ListWidgetComponent
                                             widget={widget}
                                             widgets={this.props.widgets}
                                             topicId={this.props.params.topicId}
@@ -99,26 +130,10 @@ class WidgetListComponent extends React.Component {
                 <button className="btn btn-dark float-right"
                     onClick={() => {
                         if (this.props.widgets === []) {
-                            this.props.createWidget(
-                                this.props.params.topicId,
-                                {
-                                    name: '',
-                                    type: 'HEADING',
-                                    text: 'Heading text',
-                                    size: 1,
-                                    widgetOrder: 1
-                                })
+                            this.createWidget(1)
                         }
                         else {
-                            this.props.createWidget(
-                                this.props.params.topicId,
-                                {
-                                    name: '',
-                                    type: 'HEADING',
-                                    text: 'Heading text',
-                                    size: 1,
-                                    widgetOrder: this.props.widgets.length + 1
-                                })
+                            this.createWidget(this.props.widgets.length + 1)
                         }
                     }}>
                     <i className="fa fa-plus"></i>
